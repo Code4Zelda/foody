@@ -24,7 +24,7 @@ class Customer(models.Model):
 
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='driver')
-    avatar = models.CharField(max_length=500)
+    avatar = models.CharField(max_length=500),
     name = models.CharField(max_length=500)
     phone = models.CharField(max_length=500, blank=True)
     address = models.CharField(max_length=500, blank=True)
@@ -54,10 +54,10 @@ class Order(models.Model):
         (ONTHEWAY,"On the way"),
         (DELIVERED, "Delivered"),
     )
-    
+
     customer = models.ForeignKey(Customer)
     restaurant = models.ForeignKey(Restaurant)
-    driver = models.ForeignKey(Driver)
+    driver = models.ForeignKey(Driver, blank = True, null = True)
     address = models.CharField(max_length=500)
     total = models.IntegerField()
     status = models.IntegerField(choices = STATUS_CHOICES)
@@ -68,6 +68,9 @@ class Order(models.Model):
         return str(self.id)
 
 class OrderDetails(models.Model):
+    class Meta:
+        verbose_name_plural = "Order Details"
+
     order = models.ForeignKey(Order, related_name= 'order_details')
     meal = models.ForeignKey(Meal)
     quantity = models.IntegerField()

@@ -1,10 +1,13 @@
 from django.conf.urls import url, include
 from django.contrib import admin
-from foodyapp import views
+
 from django.contrib.auth import views as auth_views
 
 from django.conf.urls.static import static
 from django.conf import settings
+
+from foodyapp import views, api
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
@@ -37,6 +40,20 @@ urlpatterns = [
     #/covert-token (sign in/sign up)
     #/revoke-token (sign out)
 
+############# APIs ##############
+#API for notification#
+    url(r'^api/restaurant/order/notification/(?P<last_request_time>.+)/$', api.restaurant_order_notification),
+## API for CUSTOMERS
+    url(r'^api/customer/restaurants/$', api.customer_get_restaurants),
+    url(r'^api/customer/meal/(?P<restaurant_id>\d+)/$', api.customer_get_meals),
+    url(r'^api/customer/order/add/$', api.customer_add_order),
+    url(r'^api/customer/order/latest/$', api.customer_get_latest_order),
+## API for DRIVERS
+    url(r'^api/driver/orders/ready/$', api.driver_get_ready_orders),
+    url(r'^api/driver/order/pick/$', api.driver_pick_order),
+    url(r'^api/driver/order/latest/$', api.driver_get_latest_order),
+    url(r'^api/driver/order/complete/$', api.driver_get_complete_order),
+    url(r'^api/driver/revenue/$', api.driver_get_revenue),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

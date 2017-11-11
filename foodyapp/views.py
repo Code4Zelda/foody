@@ -4,7 +4,7 @@ from foodyapp.forms import UserForm, RestaurantForm, UserFormforEdit, MealForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
-from foodyapp.models import Meal
+from foodyapp.models import Meal, Order
 
 # Create your views here.
 def home(request):
@@ -32,13 +32,13 @@ def restaurant_account(request):
         "user_form": user_form,
         "restaurant_form": restaurant_form
 })
-############## Meal Page #################
+################################# Meal Page ###############################
 @login_required(login_url='/restaurant/sign-in/')
 def restaurant_meal(request):
     meals = Meal.objects.filter(restaurant = request.user.restaurant).order_by("-id")
     return render(request,'restaurant/meal.html',{"meals": meals})
 
-##Add Meal Page##
+################################Add Meal Page############################
 @login_required(login_url='/restaurant/sign-in/')
 def restaurant_add_meal(request):
     form = MealForm()
@@ -56,7 +56,7 @@ def restaurant_add_meal(request):
     return render(request,'restaurant/add_meal.html',{
         "form": form
 })
-##### Meal Edit #############
+############################## Meal Edit ###############################
 @login_required(login_url='/restaurant/sign-in/')
 def restaurant_edit_meal(request, meal_id):
     form = MealForm(instance = Meal.objects.get(id = meal_id))
@@ -73,13 +73,22 @@ def restaurant_edit_meal(request, meal_id):
         "form": form
 })
 
-##Order Page
+################################## Order Page ###############################
 @login_required(login_url='/restaurant/sign-in/')
 def restaurant_order(request):
+    if request.method == "POST":
+        order = Order.objects.get(id = request.POST["id"], restaurant = request.user.restaurant)
+
+        if order.status == order.COOKING:
+            order.status = order.READY
+            order.save()
+
+
+
     orders = Order.objects.filter(restaurant = request.user.restaurant).order_by("-id")
     return render(request,'restaurant/order.html', {"orders":orders})
 
-##Report Page
+################################## Report Page ###################################
 @login_required(login_url='/restaurant/sign-in/')
 def restaurant_report(request):
     return render(request,'restaurant/report.html',{})
