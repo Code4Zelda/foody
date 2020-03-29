@@ -58,8 +58,4 @@ urlpatterns = [
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
- url(r'^api/driver/orders/ready/$', api.driver_get_ready_orders),
-    url(r'^api/driver/order/pick/$', api.driver_pick_order),
-    url(r'^api/driver/order/latest/$', api.driver_get_latest_order),
-    url(r'^api/driver/order/complete/$', api.driver_get_complete_order),
-    url(r'^api/driver/revenue/$', api.driver_get_revenue),
+ 
